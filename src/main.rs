@@ -1,3 +1,7 @@
+mod database;
+
 fn main() {
-    println!("Hello, world!");
+    let db = database::Database::new("quotes.db").unwrap();
+    let res = db.random(2).unwrap();
+    println!("{:?}", res);
 }
