@@ -1,0 +1,3 @@
+[submodule "submodules/AvatarApi"]
+	path = submodules/AvatarApi
+	url = https://github.com/dotzenith/AvatarQuotes.git
