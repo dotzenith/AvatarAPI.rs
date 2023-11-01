@@ -8,7 +8,8 @@ use std::net::SocketAddr;
 async fn main() {
     let db = database::Database::new().await.unwrap();
     let app = Router::new()
-        .route("/", get(handlers::random)).with_state(db);
+        .route("/", get(handlers::random))
+        .route("/character", get(handlers::character)).with_state(db);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     axum::Server::bind(&addr)

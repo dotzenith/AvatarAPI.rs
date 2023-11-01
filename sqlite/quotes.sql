@@ -1,8 +1,8 @@
-CREATE TABLE Quotes(
-  Quote TEXT NOT NULL,
-  Character TEXT NOT NULL,
-  Nation TEXT NOT NULL,
-  Bending TEXT NOT NULL,
-  Episode TEXT NOT NULL,
-  Book TEXT NOT NULL
+CREATE TABLE quotes(
+  quote TEXT NOT NULL,
+  character TEXT NOT NULL,
+  nation TEXT NOT NULL,
+  bending TEXT NOT NULL,
+  episode TEXT NOT NULL,
+  book TEXT NOT NULL
 );
