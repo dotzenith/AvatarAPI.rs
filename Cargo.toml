@@ -6,6 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-actix-web = "4"
+axum = "0.6.20"
+tower = "0.4.13"
+anyhow = "1.0.75"
+sqlx = { version = "0.7", features = [ "runtime-tokio", "sqlite" ] }
 serde = { version = "1.0", features = ["derive"] }
-rusqlite = { version = "0.29.0", features = ["bundled"] }
+hyper = { version = "0.14.27", features = ["full"] }
+tokio = { version = "1.33.0", features = ["full"] }

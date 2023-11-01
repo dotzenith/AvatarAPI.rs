@@ -1,7 +1,18 @@
 mod database;
+mod handlers;
 
-fn main() {
-    let db = database::Database::new("quotes.db").unwrap();
-    let res = db.random(2).unwrap();
-    println!("{:?}", res);
+use axum::{routing::get, Router};
+use std::net::SocketAddr;
+
+#[tokio::main]
+async fn main() {
+    let db = database::Database::new().await.unwrap();
+    let app = Router::new()
+        .route("/", get(handlers::random)).with_state(db);
+
+    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    axum::Server::bind(&addr)
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
 }

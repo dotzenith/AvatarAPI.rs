@@ -1,7 +1,10 @@
-use rusqlite::{Connection, Result};
-use serde::{Serialize, Deserialize};
+use std::env;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+use anyhow::Result;
+use serde::Serialize;
+use sqlx::sqlite::SqlitePool;
+
+#[derive(Debug, Clone, Serialize)]
 pub struct Quote {
     pub quote: String,
     pub character: String,
@@ -11,29 +14,32 @@ pub struct Quote {
     pub book: String,
 }
 
+#[derive(Clone)]
 pub struct Database {
-    connection: Connection,
+    connection: SqlitePool,
 }
-
 impl Database {
-    pub fn new(path: &str) -> Result<Self> {
+    pub async fn new() -> Result<Self> {
         Ok(Database {
-            connection: Connection::open(path)?
+            connection: SqlitePool::connect(&env::var("DATABASE_URL")?).await?,
         })
     }
 
-    pub fn random(&self, num: usize) -> Result<Vec<Quote>> {
-        let mut statement = self.connection.prepare("SELECT * FROM Quotes ORDER BY RANDOM() LIMIT (?1)")?;
-        let iter = statement.query_map([num], |row| {
-            Ok(Quote {
-                quote: row.get(0)?,
-                character: row.get(1)?,
-                nation: row.get(2)?,
-                bending: row.get(3)?,
-                episode: row.get(4)?,
-                book: row.get(5)?,
-            })
-        })?;
-        iter.collect()
+    #[allow(non_snake_case)]
+    pub async fn random(&self, num: u8) -> Result<Vec<Quote>> {
+        let quotes = sqlx::query!(r#"SELECT * FROM Quotes ORDER BY RANDOM() LIMIT ?1"#, num)
+            .fetch_all(&self.connection)
+            .await?;
+
+        Ok(quotes.into_iter().map(|q| {
+            Quote {
+                quote: q.Quote, 
+                character: q.Character,
+                nation: q.Nation,
+                bending: q.Bending,
+                episode: q.Episode,
+                book: q.Book,
+            }
+        }).collect())
     }
 }
