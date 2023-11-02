@@ -130,7 +130,7 @@ The response from all of the endpoints includes the `response.num` field, which 
 
 The answer is "well yes but no".
 
-For example, some characters like Koh only have 2 quotes. So even without the `num` parameter, we run into some issues. This is why the API just returns as many quotes it can and updates the `response.num` field in the case that `num` is too large for the given endpoint.
+For example, some characters like Koh only have 2 quotes. So even without the `num` parameter, we run into some issues. This is why the API just returns as many quotes it can and updates the `response.num` field in the case that `num` is too large for the given request.
 
 The `response.num` field exists as a sanity check. Users can confirm that they got the number of quotes they requested, or implement special logic in case it's different.
 
