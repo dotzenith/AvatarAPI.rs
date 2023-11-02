@@ -44,35 +44,18 @@ mod tests {
     async fn test_all_endpoints_with_valid_inputs_check_num() {
         assert_eq!(send_request_get_body("/api/quotes", "").await.num, 5);
         assert_eq!(
-            send_request_get_body("/api/quotes/character", "value=Aang")
-                .await
-                .num,
+            send_request_get_body("/api/quotes/character", "value=Aang").await.num,
             5
         );
-        assert_eq!(
-            send_request_get_body("/api/quotes/nation", "value=Fire")
-                .await
-                .num,
-            5
-        );
-        assert_eq!(
-            send_request_get_body("/api/quotes/bending", "value=All")
-                .await
-                .num,
-            5
-        );
+        assert_eq!(send_request_get_body("/api/quotes/nation", "value=Fire").await.num, 5);
+        assert_eq!(send_request_get_body("/api/quotes/bending", "value=All").await.num, 5);
         assert_eq!(
             send_request_get_body("/api/quotes/episode", "value=Imprisoned")
                 .await
                 .num,
             5
         );
-        assert_eq!(
-            send_request_get_body("/api/quotes/book", "value=Earth")
-                .await
-                .num,
-            5
-        );
+        assert_eq!(send_request_get_body("/api/quotes/book", "value=Earth").await.num, 5);
     }
 
     #[tokio::test]
@@ -82,36 +65,11 @@ mod tests {
 
     #[tokio::test]
     async fn test_endpoints_with_invalid_value() {
-        assert_eq!(
-            send_request_get_body("/api/quotes/character", "value=Ong")
-                .await
-                .num,
-            0
-        );
-        assert_eq!(
-            send_request_get_body("/api/quotes/nation", "value=Swamp")
-                .await
-                .num,
-            0
-        );
-        assert_eq!(
-            send_request_get_body("/api/quotes/bending", "value=Blood")
-                .await
-                .num,
-            0
-        );
-        assert_eq!(
-            send_request_get_body("/api/quotes/episode", "value=Hello")
-                .await
-                .num,
-            0
-        );
-        assert_eq!(
-            send_request_get_body("/api/quotes/book", "value=Moon")
-                .await
-                .num,
-            0
-        );
+        assert_eq!(send_request_get_body("/api/quotes/character", "value=Ong").await.num, 0);
+        assert_eq!(send_request_get_body("/api/quotes/nation", "value=Swamp").await.num, 0);
+        assert_eq!(send_request_get_body("/api/quotes/bending", "value=Blood").await.num, 0);
+        assert_eq!(send_request_get_body("/api/quotes/episode", "value=Hello").await.num, 0);
+        assert_eq!(send_request_get_body("/api/quotes/book", "value=Moon").await.num, 0);
     }
 
     #[tokio::test]

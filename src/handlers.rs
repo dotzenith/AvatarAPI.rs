@@ -24,10 +24,7 @@ pub struct RandomParams {
     num: Option<u8>,
 }
 
-pub async fn random(
-    Query(params): Query<RandomParams>,
-    State(database): State<database::Database>,
-) -> Response {
+pub async fn random(Query(params): Query<RandomParams>, State(database): State<database::Database>) -> Response {
     match database.random(params.num.unwrap_or(5)).await {
         Ok(res) => {
             let result = Json(Result {
@@ -45,14 +42,8 @@ pub async fn random(
     }
 }
 
-pub async fn character(
-    Query(params): Query<QueryParams>,
-    State(database): State<database::Database>,
-) -> Response {
-    match database
-        .character(&params.value, params.num.unwrap_or(5))
-        .await
-    {
+pub async fn character(Query(params): Query<QueryParams>, State(database): State<database::Database>) -> Response {
+    match database.character(&params.value, params.num.unwrap_or(5)).await {
         Ok(res) => {
             let status = match res.len() {
                 0 => StatusCode::BAD_REQUEST,
@@ -69,14 +60,8 @@ pub async fn character(
     }
 }
 
-pub async fn nation(
-    Query(params): Query<QueryParams>,
-    State(database): State<database::Database>,
-) -> Response {
-    match database
-        .nation(&params.value, params.num.unwrap_or(5))
-        .await
-    {
+pub async fn nation(Query(params): Query<QueryParams>, State(database): State<database::Database>) -> Response {
+    match database.nation(&params.value, params.num.unwrap_or(5)).await {
         Ok(res) => {
             let status = match res.len() {
                 0 => StatusCode::BAD_REQUEST,
@@ -93,14 +78,8 @@ pub async fn nation(
     }
 }
 
-pub async fn bending(
-    Query(params): Query<QueryParams>,
-    State(database): State<database::Database>,
-) -> Response {
-    match database
-        .bending(&params.value, params.num.unwrap_or(5))
-        .await
-    {
+pub async fn bending(Query(params): Query<QueryParams>, State(database): State<database::Database>) -> Response {
+    match database.bending(&params.value, params.num.unwrap_or(5)).await {
         Ok(res) => {
             let status = match res.len() {
                 0 => StatusCode::BAD_REQUEST,
@@ -117,14 +96,8 @@ pub async fn bending(
     }
 }
 
-pub async fn episode(
-    Query(params): Query<QueryParams>,
-    State(database): State<database::Database>,
-) -> Response {
-    match database
-        .episode(&params.value, params.num.unwrap_or(5))
-        .await
-    {
+pub async fn episode(Query(params): Query<QueryParams>, State(database): State<database::Database>) -> Response {
+    match database.episode(&params.value, params.num.unwrap_or(5)).await {
         Ok(res) => {
             let status = match res.len() {
                 0 => StatusCode::BAD_REQUEST,
@@ -141,14 +114,8 @@ pub async fn episode(
     }
 }
 
-pub async fn book(
-    Query(params): Query<QueryParams>,
-    State(database): State<database::Database>,
-) -> Response {
-    match database
-        .book(&params.value, params.num.unwrap_or(5))
-        .await
-    {
+pub async fn book(Query(params): Query<QueryParams>, State(database): State<database::Database>) -> Response {
+    match database.book(&params.value, params.num.unwrap_or(5)).await {
         Ok(res) => {
             let status = match res.len() {
                 0 => StatusCode::BAD_REQUEST,
