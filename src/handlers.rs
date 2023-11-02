@@ -17,7 +17,7 @@ pub struct QuoteResult {
 #[derive(Serialize, Deserialize)]
 pub struct ColumnResult {
     pub num: usize,
-    pub quotes: Vec<String>,
+    pub values: Vec<String>,
 }
 
 #[derive(Deserialize)]
@@ -100,7 +100,7 @@ async fn all(db: &database::Database, column: database::Column) -> Response {
         Ok(res) => {
             let result = Json(ColumnResult {
                 num: res.len(),
-                quotes: res,
+                values: res,
             });
             (StatusCode::OK, result).into_response()
         }
