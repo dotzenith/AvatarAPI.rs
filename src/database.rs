@@ -3,6 +3,7 @@ use std::env;
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use sqlx::sqlite::SqlitePool;
+use sqlx::Row;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Quote {
@@ -17,6 +18,15 @@ pub struct Quote {
 #[derive(Clone)]
 pub struct Database {
     pool: SqlitePool,
+}
+
+#[derive(Clone, Copy, Debug)]
+pub enum Column {
+    Character,
+    Nation,
+    Bending,
+    Episode,
+    Book,
 }
 
 impl Database {
@@ -152,5 +162,20 @@ impl Database {
                 book: q.book,
             })
             .collect())
+    }
+
+    pub async fn get_all(&self, column: Column) -> Result<Vec<String>> {
+        let col = match column {
+            Column::Character => "character",
+            Column::Nation => "nation",
+            Column::Bending => "bending",
+            Column::Episode => "episode",
+            Column::Book => "book",
+        };
+        let quotes = sqlx::query(&format!("SELECT DISTINCT {} FROM quotes", col))
+            .fetch_all(&self.pool)
+            .await?;
+
+        Ok(quotes.into_iter().map(|q| q.get(0)).collect())
     }
 }
