@@ -180,23 +180,23 @@ mod tests {
     async fn test_column_endpoints_for_an_expected_value() {
         assert!(send_column_request_get_body("/api/all/character")
             .await
-            .quotes
+            .values
             .contains(&"Aang".to_string()));
         assert!(send_column_request_get_body("/api/all/nation")
             .await
-            .quotes
+            .values
             .contains(&"Water".to_string()));
         assert!(send_column_request_get_body("/api/all/bending")
             .await
-            .quotes
+            .values
             .contains(&"All".to_string()));
         assert!(send_column_request_get_body("/api/all/episode")
             .await
-            .quotes
+            .values
             .contains(&"The Avatar Returns".to_string()));
         assert!(send_column_request_get_body("/api/all/book")
             .await
-            .quotes
+            .values
             .contains(&"Fire".to_string()));
     }
 
