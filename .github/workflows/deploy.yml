@@ -21,7 +21,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.PRIVATE_KEY }}
         port: 22
-        command_timeout: 15m
+        command_timeout: 30m
         script: |
           cd ~/AvatarAPI.rs
           git pull origin main
