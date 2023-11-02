@@ -16,7 +16,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install sqlite
-        run: apt install sqlite3
+        run: sudo apt install sqlite3
 
       - name: Make db
         run: ./sqlite/setup.sh
