@@ -7,20 +7,28 @@ use axum::{
 };
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct Result {
-    num: usize,
-    quotes: Vec<database::Quote>,
+    pub num: usize,
+    pub quotes: Vec<database::Quote>,
 }
 
 #[derive(Deserialize)]
-pub struct Params {
-    name: String,
+pub struct QueryParams {
+    value: String,
     num: Option<u8>,
 }
 
-pub async fn random(State(database): State<database::Database>) -> Response {
-    match database.random(5).await {
+#[derive(Deserialize)]
+pub struct RandomParams {
+    num: Option<u8>,
+}
+
+pub async fn random(
+    Query(params): Query<RandomParams>,
+    State(database): State<database::Database>,
+) -> Response {
+    match database.random(params.num.unwrap_or(5)).await {
         Ok(res) => {
             let result = Json(Result {
                 num: res.len(),
@@ -38,11 +46,107 @@ pub async fn random(State(database): State<database::Database>) -> Response {
 }
 
 pub async fn character(
-    Query(params): Query<Params>,
+    Query(params): Query<QueryParams>,
     State(database): State<database::Database>,
 ) -> Response {
     match database
-        .character(&params.name, params.num.unwrap_or(5))
+        .character(&params.value, params.num.unwrap_or(5))
+        .await
+    {
+        Ok(res) => {
+            let status = match res.len() {
+                0 => StatusCode::BAD_REQUEST,
+                _ => StatusCode::OK,
+            };
+            let result = Json(Result {
+                num: res.len(),
+                quotes: res,
+            });
+            (status, result).into_response()
+        }
+
+        Err(err) => (StatusCode::INTERNAL_SERVER_ERROR, err.to_string()).into_response(),
+    }
+}
+
+pub async fn nation(
+    Query(params): Query<QueryParams>,
+    State(database): State<database::Database>,
+) -> Response {
+    match database
+        .nation(&params.value, params.num.unwrap_or(5))
+        .await
+    {
+        Ok(res) => {
+            let status = match res.len() {
+                0 => StatusCode::BAD_REQUEST,
+                _ => StatusCode::OK,
+            };
+            let result = Json(Result {
+                num: res.len(),
+                quotes: res,
+            });
+            (status, result).into_response()
+        }
+
+        Err(err) => (StatusCode::INTERNAL_SERVER_ERROR, err.to_string()).into_response(),
+    }
+}
+
+pub async fn bending(
+    Query(params): Query<QueryParams>,
+    State(database): State<database::Database>,
+) -> Response {
+    match database
+        .bending(&params.value, params.num.unwrap_or(5))
+        .await
+    {
+        Ok(res) => {
+            let status = match res.len() {
+                0 => StatusCode::BAD_REQUEST,
+                _ => StatusCode::OK,
+            };
+            let result = Json(Result {
+                num: res.len(),
+                quotes: res,
+            });
+            (status, result).into_response()
+        }
+
+        Err(err) => (StatusCode::INTERNAL_SERVER_ERROR, err.to_string()).into_response(),
+    }
+}
+
+pub async fn episode(
+    Query(params): Query<QueryParams>,
+    State(database): State<database::Database>,
+) -> Response {
+    match database
+        .episode(&params.value, params.num.unwrap_or(5))
+        .await
+    {
+        Ok(res) => {
+            let status = match res.len() {
+                0 => StatusCode::BAD_REQUEST,
+                _ => StatusCode::OK,
+            };
+            let result = Json(Result {
+                num: res.len(),
+                quotes: res,
+            });
+            (status, result).into_response()
+        }
+
+        Err(err) => (StatusCode::INTERNAL_SERVER_ERROR, err.to_string()).into_response(),
+    }
+}
+
+pub async fn book(
+    Query(params): Query<QueryParams>,
+    State(database): State<database::Database>,
+) -> Response {
+    match database
+        .book(&params.value, params.num.unwrap_or(5))
         .await
     {
         Ok(res) => {

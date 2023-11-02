@@ -18,46 +18,12 @@ pub struct Quote {
 pub struct Database {
     pool: SqlitePool,
 }
+
 impl Database {
     pub async fn new() -> Result<Self> {
-        let db = Database {
-            pool: SqlitePool::connect("sqlite::memory:").await?,
-        };
-        sqlx::query(
-            r#"
-                CREATE TABLE quotes(
-                  quote TEXT NOT NULL,
-                  character TEXT NOT NULL,
-                  nation TEXT NOT NULL,
-                  bending TEXT NOT NULL,
-                  episode TEXT NOT NULL,
-                  book TEXT NOT NULL
-                );
-            "#,
-        )
-        .execute(&db.pool)
-        .await?;
-
-        let mut rdr = csv::ReaderBuilder::new()
-            .delimiter(b'|')
-            .from_path(&env::var("QUOTES_PATH")?)?;
-
-        for result in rdr.deserialize() {
-            let quote: Quote = result?;
-            sqlx::query!(
-                r#"INSERT INTO quotes VALUES (?1, ?2, ?3, ?4, ?5, ?6)"#,
-                quote.quote,
-                quote.character,
-                quote.nation,
-                quote.bending,
-                quote.episode,
-                quote.book,
-            )
-            .execute(&db.pool)
-            .await?;
-        }
-
-        Ok(db)
+        Ok(Database {
+            pool: SqlitePool::connect(&env::var("DATABASE_URL")?).await?,
+        })
     }
 
     pub async fn random(&self, num: u8) -> Result<Vec<Quote>> {
@@ -78,10 +44,98 @@ impl Database {
             .collect())
     }
 
-    pub async fn character(&self, name: &str, num: u8) -> Result<Vec<Quote>> {
+    pub async fn character(&self, value: &str, num: u8) -> Result<Vec<Quote>> {
         let quotes = sqlx::query!(
             r#"SELECT * FROM quotes WHERE character = ?1 ORDER BY RANDOM() LIMIT ?2"#,
-            name,
+            value,
+            num
+        )
+        .fetch_all(&self.pool)
+        .await?;
+
+        Ok(quotes
+            .into_iter()
+            .map(|q| Quote {
+                quote: q.quote,
+                character: q.character,
+                nation: q.nation,
+                bending: q.bending,
+                episode: q.episode,
+                book: q.book,
+            })
+            .collect())
+    }
+
+    pub async fn nation(&self, value: &str, num: u8) -> Result<Vec<Quote>> {
+        let quotes = sqlx::query!(
+            r#"SELECT * FROM quotes WHERE nation = ?1 ORDER BY RANDOM() LIMIT ?2"#,
+            value,
+            num
+        )
+        .fetch_all(&self.pool)
+        .await?;
+
+        Ok(quotes
+            .into_iter()
+            .map(|q| Quote {
+                quote: q.quote,
+                character: q.character,
+                nation: q.nation,
+                bending: q.bending,
+                episode: q.episode,
+                book: q.book,
+            })
+            .collect())
+    }
+
+    pub async fn bending(&self, value: &str, num: u8) -> Result<Vec<Quote>> {
+        let quotes = sqlx::query!(
+            r#"SELECT * FROM quotes WHERE bending = ?1 ORDER BY RANDOM() LIMIT ?2"#,
+            value,
+            num
+        )
+        .fetch_all(&self.pool)
+        .await?;
+
+        Ok(quotes
+            .into_iter()
+            .map(|q| Quote {
+                quote: q.quote,
+                character: q.character,
+                nation: q.nation,
+                bending: q.bending,
+                episode: q.episode,
+                book: q.book,
+            })
+            .collect())
+    }
+
+    pub async fn episode(&self, value: &str, num: u8) -> Result<Vec<Quote>> {
+        let quotes = sqlx::query!(
+            r#"SELECT * FROM quotes WHERE episode = ?1 ORDER BY RANDOM() LIMIT ?2"#,
+            value,
+            num
+        )
+        .fetch_all(&self.pool)
+        .await?;
+
+        Ok(quotes
+            .into_iter()
+            .map(|q| Quote {
+                quote: q.quote,
+                character: q.character,
+                nation: q.nation,
+                bending: q.bending,
+                episode: q.episode,
+                book: q.book,
+            })
+            .collect())
+    }
+
+    pub async fn book(&self, value: &str, num: u8) -> Result<Vec<Quote>> {
+        let quotes = sqlx::query!(
+            r#"SELECT * FROM quotes WHERE book = ?1 ORDER BY RANDOM() LIMIT ?2"#,
+            value,
             num
         )
         .fetch_all(&self.pool)
