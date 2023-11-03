@@ -138,7 +138,7 @@ The `response.num` field exists as a sanity check. Users can confirm that they g
 
 ### ❖ Rate Limiting
 
-AvatarAPI currently allows 100 requests per hour from a given IP address. In case you desire more, feel free to take a look at the [Self Hosting](#Self-Hosting) section.
+AvatarAPI currently allows 5 requests per minute from a given IP address. In case you desire more, feel free to take a look at the [Self Hosting](#Self-Hosting) section.
 
 ---
 
