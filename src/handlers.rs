@@ -6,7 +6,11 @@ use axum::{
     response::{IntoResponse, Response},
     Json,
 };
+use nutype::nutype;
 use serde::{Deserialize, Serialize};
+
+#[nutype(validate(greater = 0), derive(Debug, Deserialize, Copy, Clone))]
+pub struct Number(u8);
 
 #[derive(Serialize, Deserialize)]
 pub struct QuoteResult {
@@ -23,40 +27,85 @@ pub struct ColumnResult {
 #[derive(Deserialize)]
 pub struct QueryParams {
     value: String,
-    num: Option<u8>,
+    num: Option<Number>,
 }
 
 #[derive(Deserialize)]
 pub struct RandomParams {
-    num: Option<u8>,
+    num: Option<Number>,
 }
 
 // Handlers for Quotes
 pub async fn random(Query(params): Query<RandomParams>, State(database): State<database::Database>) -> Response {
-    query(database.random(params.num.unwrap_or(5)).await).await
+    wrap(
+        database
+            .random(params.num.unwrap_or(Number::new(5).unwrap()).into_inner())
+            .await,
+    )
+    .await
 }
 
 pub async fn character(Query(params): Query<QueryParams>, State(database): State<database::Database>) -> Response {
-    query(database.character(&params.value, params.num.unwrap_or(5)).await).await
+    wrap(
+        database
+            .character(
+                &params.value,
+                params.num.unwrap_or(Number::new(5).unwrap()).into_inner(),
+            )
+            .await,
+    )
+    .await
 }
 
 pub async fn nation(Query(params): Query<QueryParams>, State(database): State<database::Database>) -> Response {
-    query(database.nation(&params.value, params.num.unwrap_or(5)).await).await
+    wrap(
+        database
+            .nation(
+                &params.value,
+                params.num.unwrap_or(Number::new(5).unwrap()).into_inner(),
+            )
+            .await,
+    )
+    .await
 }
 
 pub async fn bending(Query(params): Query<QueryParams>, State(database): State<database::Database>) -> Response {
-    query(database.bending(&params.value, params.num.unwrap_or(5)).await).await
+    wrap(
+        database
+            .bending(
+                &params.value,
+                params.num.unwrap_or(Number::new(5).unwrap()).into_inner(),
+            )
+            .await,
+    )
+    .await
 }
 
 pub async fn episode(Query(params): Query<QueryParams>, State(database): State<database::Database>) -> Response {
-    query(database.episode(&params.value, params.num.unwrap_or(5)).await).await
+    wrap(
+        database
+            .episode(
+                &params.value,
+                params.num.unwrap_or(Number::new(5).unwrap()).into_inner(),
+            )
+            .await,
+    )
+    .await
 }
 
 pub async fn book(Query(params): Query<QueryParams>, State(database): State<database::Database>) -> Response {
-    query(database.book(&params.value, params.num.unwrap_or(5)).await).await
+    wrap(
+        database
+            .book(
+                &params.value,
+                params.num.unwrap_or(Number::new(5).unwrap()).into_inner(),
+            )
+            .await,
+    )
+    .await
 }
 
-async fn query(res: Result<Vec<database::Quote>>) -> Response {
+async fn wrap(res: Result<Vec<database::Quote>>) -> Response {
     match res {
         Ok(res) => {
             let status = match res.len() {

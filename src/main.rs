@@ -44,75 +44,86 @@ async fn app() -> Router {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use axum::{body::Body, http::Request};
+    use axum::response::Response;
+    use axum::{body::Body, http::{Request, StatusCode}};
     use tower::ServiceExt;
 
     #[tokio::test]
     async fn test_all_quote_endpoints_with_valid_inputs_check_num() {
-        assert_eq!(send_quote_request_get_body("/api/quotes", "").await.num, 5);
+        assert_eq!(get_quote_request_body(send_quote_request_get_response("/api/quotes", "").await).await.num, 5);
         assert_eq!(
-            send_quote_request_get_body("/api/quotes/character", "value=Aang")
+            get_quote_request_body(send_quote_request_get_response("/api/quotes/character", "value=Aang").await)
                 .await
                 .num,
             5
         );
         assert_eq!(
-            send_quote_request_get_body("/api/quotes/nation", "value=Fire")
+            get_quote_request_body(send_quote_request_get_response("/api/quotes/nation", "value=Fire").await)
                 .await
                 .num,
             5
         );
         assert_eq!(
-            send_quote_request_get_body("/api/quotes/bending", "value=All")
+            get_quote_request_body(send_quote_request_get_response("/api/quotes/bending", "value=All").await)
                 .await
                 .num,
             5
         );
         assert_eq!(
-            send_quote_request_get_body("/api/quotes/episode", "value=Imprisoned")
+            get_quote_request_body(send_quote_request_get_response("/api/quotes/episode", "value=Imprisoned").await)
                 .await
                 .num,
             5
         );
         assert_eq!(
-            send_quote_request_get_body("/api/quotes/book", "value=Earth").await.num,
+            get_quote_request_body(send_quote_request_get_response("/api/quotes/book", "value=Earth").await)
+                .await
+                .num,
             5
         );
     }
 
     #[tokio::test]
     async fn test_quote_non_default_num() {
-        assert_eq!(send_quote_request_get_body("/api/quotes", "num=6").await.num, 6);
+        assert_eq!(get_quote_request_body(send_quote_request_get_response("/api/quotes", "num=6").await).await.num, 6);
+    }
+
+    #[tokio::test]
+    async fn test_quote_invalid_num() {
+        assert_eq!(send_quote_request_get_response("/api/quotes", "num=256").await.status(), StatusCode::BAD_REQUEST);
+        assert_eq!(send_quote_request_get_response("/api/quotes", "num=0").await.status(), StatusCode::BAD_REQUEST);
     }
 
     #[tokio::test]
     async fn test_quote_endpoints_with_invalid_value() {
         assert_eq!(
-            send_quote_request_get_body("/api/quotes/character", "value=Ong")
+            get_quote_request_body(send_quote_request_get_response("/api/quotes/character", "value=Ong").await)
                 .await
                 .num,
             0
         );
         assert_eq!(
-            send_quote_request_get_body("/api/quotes/nation", "value=Swamp")
+            get_quote_request_body(send_quote_request_get_response("/api/quotes/nation", "value=Swamp").await)
                 .await
                 .num,
             0
         );
         assert_eq!(
-            send_quote_request_get_body("/api/quotes/bending", "value=Blood")
+            get_quote_request_body(send_quote_request_get_response("/api/quotes/bending", "value=Blood").await)
                 .await
                 .num,
             0
         );
         assert_eq!(
-            send_quote_request_get_body("/api/quotes/episode", "value=Hello")
+            get_quote_request_body(send_quote_request_get_response("/api/quotes/episode", "value=Hello").await)
                 .await
                 .num,
             0
         );
         assert_eq!(
-            send_quote_request_get_body("/api/quotes/book", "value=Moon").await.num,
+            get_quote_request_body(send_quote_request_get_response("/api/quotes/book", "value=Moon").await)
+                .await
+                .num,
             0
         );
     }
@@ -120,7 +131,7 @@ mod tests {
     #[tokio::test]
     async fn test_quote_endpoint_correct_num_despite_query_param() {
         assert_eq!(
-            send_quote_request_get_body("/api/quotes/character", "value=Koh&num=5")
+            get_quote_request_body(send_quote_request_get_response("/api/quotes/character", "value=Koh&num=5").await)
                 .await
                 .num,
             2
@@ -130,7 +141,7 @@ mod tests {
     #[tokio::test]
     async fn test_quote_endpoints_with_valid_inputs_check_value() {
         assert_eq!(
-            send_quote_request_get_body("/api/quotes/character", "value=Aang")
+            get_quote_request_body(send_quote_request_get_response("/api/quotes/character", "value=Aang").await)
                 .await
                 .quotes
                 .first()
@@ -139,7 +150,7 @@ mod tests {
             "Aang"
         );
         assert_eq!(
-            send_quote_request_get_body("/api/quotes/nation", "value=Fire")
+            get_quote_request_body(send_quote_request_get_response("/api/quotes/nation", "value=Fire").await)
                 .await
                 .quotes
                 .first()
@@ -148,7 +159,7 @@ mod tests {
             "Fire"
         );
         assert_eq!(
-            send_quote_request_get_body("/api/quotes/bending", "value=None")
+            get_quote_request_body(send_quote_request_get_response("/api/quotes/bending", "value=None").await)
                 .await
                 .quotes
                 .first()
@@ -157,7 +168,7 @@ mod tests {
             "None"
         );
         assert_eq!(
-            send_quote_request_get_body("/api/quotes/episode", "value=Imprisoned")
+            get_quote_request_body(send_quote_request_get_response("/api/quotes/episode", "value=Imprisoned").await)
                 .await
                 .quotes
                 .first()
@@ -166,7 +177,7 @@ mod tests {
             "Imprisoned"
         );
         assert_eq!(
-            send_quote_request_get_body("/api/quotes/book", "value=Fire")
+            get_quote_request_body(send_quote_request_get_response("/api/quotes/book", "value=Fire").await)
                 .await
                 .quotes
                 .first()
@@ -200,8 +211,8 @@ mod tests {
             .contains(&"Fire".to_string()));
     }
 
-    async fn send_quote_request_get_body(uri: &str, query: &str) -> handlers::QuoteResult {
-        let response = app()
+    async fn send_quote_request_get_response(uri: &str, query: &str) -> Response {
+        app()
             .await
             .oneshot(
                 Request::builder()
@@ -210,7 +221,10 @@ mod tests {
                     .unwrap(),
             )
             .await
-            .unwrap();
+            .unwrap()
+    }
+
+    async fn get_quote_request_body(response: Response) -> handlers::QuoteResult {
         let body = hyper::body::to_bytes(response.into_body()).await.unwrap();
         let body: handlers::QuoteResult = serde_json::from_slice(&body).unwrap();
         body

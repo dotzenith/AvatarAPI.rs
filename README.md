@@ -89,7 +89,7 @@ $ http GET https://avatarquotes.xyz/api/quotes/character value==Aang
 
 All of the endpoints above require the `value` parameter, which is case sensitive
 
-There is also an optional `num` parameter that can be used to specify how many quotes you'd like. Quotes can be in the range `[0, 255]` (yes it's just a `u8`, I don't know why you'd want 0 quotes)
+There is also an optional `num` parameter that can be used to specify how many quotes you'd like. Quotes can be in the range `[1, 255]`
 
 <b></b>
 
@@ -175,7 +175,7 @@ After the step above, set up a reverse proxy using a webserver of your choice an
 
 ### ❖ What's New?
 
-0.1.0 - Initial Release
+0.2.0 - Added additional checks for `num` param to ensure it's not `0`
 
 ---
 
