@@ -1,7 +1,8 @@
-FROM rust:1.73.0-bullseye
+# Build
+FROM docker.io/library/rust:1.76.0-bullseye as builder
 
-WORKDIR /usr/src/avatarapi
-COPY . .
+WORKDIR /app
+ADD . /app
 
 RUN apt update
 RUN apt install sqlite3 
@@ -11,4 +12,10 @@ RUN ./sqlite/setup.sh
 ENV DATABASE_URL "sqlite://quotes.db"
 
 RUN cargo build --release
-CMD ["./target/release/avatarapi"]
+
+# Run
+FROM gcr.io/distroless/cc-debian12
+COPY --from=builder /app/target/release/avatarapi /
+COPY --from=builder /app/quotes.db /
+ENV DATABASE_URL "sqlite://quotes.db"
+CMD ["./avatarapi"]
