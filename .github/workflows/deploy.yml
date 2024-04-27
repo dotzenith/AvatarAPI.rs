@@ -16,7 +16,7 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.PRIVATE_KEY }}
-        port: 22
+        port: 2222
         command_timeout: 30m
         script: |
           cd ~/AvatarAPI.rs
