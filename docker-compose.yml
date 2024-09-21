@@ -1,0 +1,6 @@
+services:
+  avatarapi:
+    image: avatarapi:latest
+    container_name: avatarapi
+    ports:
+      - "3000:3000"

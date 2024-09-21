@@ -39,7 +39,7 @@ pub struct RandomParams {
 pub async fn random(Query(params): Query<RandomParams>, State(database): State<database::Database>) -> Response {
     wrap(
         database
-            .random(params.num.unwrap_or(Number::new(5).unwrap()).into_inner())
+            .random(params.num.unwrap_or(Number::try_new(5).unwrap()).into_inner())
             .await,
     )
     .await
@@ -50,7 +50,7 @@ pub async fn character(Query(params): Query<QueryParams>, State(database): State
         database
             .character(
                 &params.value,
-                params.num.unwrap_or(Number::new(5).unwrap()).into_inner(),
+                params.num.unwrap_or(Number::try_new(5).unwrap()).into_inner(),
             )
             .await,
     )
@@ -62,7 +62,7 @@ pub async fn nation(Query(params): Query<QueryParams>, State(database): State<da
         database
             .nation(
                 &params.value,
-                params.num.unwrap_or(Number::new(5).unwrap()).into_inner(),
+                params.num.unwrap_or(Number::try_new(5).unwrap()).into_inner(),
             )
             .await,
     )
@@ -74,7 +74,7 @@ pub async fn bending(Query(params): Query<QueryParams>, State(database): State<d
         database
             .bending(
                 &params.value,
-                params.num.unwrap_or(Number::new(5).unwrap()).into_inner(),
+                params.num.unwrap_or(Number::try_new(5).unwrap()).into_inner(),
             )
             .await,
     )
@@ -86,7 +86,7 @@ pub async fn episode(Query(params): Query<QueryParams>, State(database): State<d
         database
             .episode(
                 &params.value,
-                params.num.unwrap_or(Number::new(5).unwrap()).into_inner(),
+                params.num.unwrap_or(Number::try_new(5).unwrap()).into_inner(),
             )
             .await,
     )
@@ -98,7 +98,7 @@ pub async fn book(Query(params): Query<QueryParams>, State(database): State<data
         database
             .book(
                 &params.value,
-                params.num.unwrap_or(Number::new(5).unwrap()).into_inner(),
+                params.num.unwrap_or(Number::try_new(5).unwrap()).into_inner(),
             )
             .await,
     )
