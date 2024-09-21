@@ -164,7 +164,7 @@ $ docker build -t avatarapi:latest .
 #### ❖ Run the container
 
 ```
-$ docker run -p 3000:3000 -d --name avatarapi avatarapi:latest
+$ docker compose up -d
 ```
 
 #### ❖ Set up a reverse proxy
@@ -173,9 +173,35 @@ After the step above, set up a reverse proxy using a webserver of your choice an
 
 ---
 
+### ❖ Development
+
+Aside from the rust toolchain, `sqlite` is a required dependency for Development
+
+#### 1. Ensure that the repo is clones with the submodule
+```
+git clone --recurse-submodules git@github.com:dotzenith/AvatarAPI.rs
+```
+
+#### 2. Create a sqlite DB
+```
+./sqlite/setup.sh
+```
+
+#### 3. Set the environment variable so sqlx can find it
+```
+export QUOTES_DATABASE_URL="sqlite://quotes.db"
+```
+
+#### 4. Run development build
+```
+cargo run
+```
+
+---
+
 ### ❖ What's New?
 
-0.2.0 - Added additional checks for `num` param to ensure it's not `0`
+0.3.0 - Updated rust toolchain and deployment
 
 ---
 
