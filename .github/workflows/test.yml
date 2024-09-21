@@ -24,6 +24,6 @@ jobs:
       - name: Test
         uses: actions-rs/cargo@v1
         env:
-          QUOTES_DATABASE_URL: sqlite://quotes.db
+          DATABASE_URL: sqlite://quotes.db
         with:
           command: test
