@@ -32,7 +32,7 @@ pub enum Column {
 impl Database {
     pub async fn new() -> Result<Self> {
         Ok(Database {
-            pool: SqlitePool::connect(&env::var("QUOTES_DATABASE_URL")?).await?,
+            pool: SqlitePool::connect(&env::var("DATABASE_URL")?).await?,
         })
     }
 

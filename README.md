@@ -189,7 +189,7 @@ git clone --recurse-submodules git@github.com:dotzenith/AvatarAPI.rs
 
 #### 3. Set the environment variable so sqlx can find it
 ```
-export QUOTES_DATABASE_URL="sqlite://quotes.db"
+export DATABASE_URL="sqlite://quotes.db"
 ```
 
 #### 4. Run development build
@@ -201,7 +201,7 @@ cargo run
 
 ### ❖ What's New?
 
-0.3.0 - Updated rust toolchain and deployment
+0.3.1 - Updated rust toolchain and deployment
 
 ---
 
