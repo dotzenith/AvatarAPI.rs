@@ -15,15 +15,7 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Install sqlite
-        run: sudo apt install sqlite3
-
-      - name: Make db
-        run: ./sqlite/setup.sh
-
       - name: Test
         uses: actions-rs/cargo@v1
-        env:
-          DATABASE_URL: sqlite://quotes.db
         with:
           command: test
