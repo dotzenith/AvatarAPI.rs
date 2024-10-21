@@ -201,7 +201,7 @@ cargo run
 
 ### ❖ What's New?
 
-0.3.1 - Updated rust toolchain and deployment
+0.4.0 - Use in-memory sqlite
 
 ---
 
