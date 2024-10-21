@@ -22,5 +22,4 @@ jobs:
           cd ~/web/AvatarAPI.rs
           git pull origin main
           docker compose down
-          docker build -t avatarapi:latest .
-          docker compose up -d
+          docker compose up --build -d

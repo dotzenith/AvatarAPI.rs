@@ -2,23 +2,31 @@ mod database;
 mod handlers;
 
 use axum::{routing::get, Router};
+use std::env;
 use tower_http::trace::{self, TraceLayer};
 use tracing::Level;
 
 #[tokio::main]
 async fn main() {
+    let mut path = "./submodules/AvatarApi/Quotes.csv";
+    let args: Vec<String> = env::args().collect();
+
+    if args.len() == 2 {
+        path = &args[1];
+    }
+
     tracing_subscriber::fmt().with_target(false).compact().init();
 
     let addr = "0.0.0.0:3000";
     tracing::info!("Started listening on: {}", addr);
     axum::Server::bind(&addr.parse().unwrap())
-        .serve(app().await.into_make_service())
+        .serve(app(path).await.into_make_service())
         .await
         .unwrap();
 }
 
-async fn app() -> Router {
-    let db = database::Database::new().await.unwrap();
+async fn app(csv_path: &str) -> Router {
+    let db = database::Database::new(csv_path).await.unwrap();
     Router::new()
         // Quotes
         .route("/api/quotes", get(handlers::random))
@@ -45,12 +53,20 @@ async fn app() -> Router {
 mod tests {
     use super::*;
     use axum::response::Response;
-    use axum::{body::Body, http::{Request, StatusCode}};
+    use axum::{
+        body::Body,
+        http::{Request, StatusCode},
+    };
     use tower::ServiceExt;
 
     #[tokio::test]
     async fn test_all_quote_endpoints_with_valid_inputs_check_num() {
-        assert_eq!(get_quote_request_body(send_quote_request_get_response("/api/quotes", "").await).await.num, 5);
+        assert_eq!(
+            get_quote_request_body(send_quote_request_get_response("/api/quotes", "").await)
+                .await
+                .num,
+            5
+        );
         assert_eq!(
             get_quote_request_body(send_quote_request_get_response("/api/quotes/character", "value=Aang").await)
                 .await
@@ -85,13 +101,24 @@ mod tests {
 
     #[tokio::test]
     async fn test_quote_non_default_num() {
-        assert_eq!(get_quote_request_body(send_quote_request_get_response("/api/quotes", "num=6").await).await.num, 6);
+        assert_eq!(
+            get_quote_request_body(send_quote_request_get_response("/api/quotes", "num=6").await)
+                .await
+                .num,
+            6
+        );
     }
 
     #[tokio::test]
     async fn test_quote_invalid_num() {
-        assert_eq!(send_quote_request_get_response("/api/quotes", "num=256").await.status(), StatusCode::BAD_REQUEST);
-        assert_eq!(send_quote_request_get_response("/api/quotes", "num=0").await.status(), StatusCode::BAD_REQUEST);
+        assert_eq!(
+            send_quote_request_get_response("/api/quotes", "num=256").await.status(),
+            StatusCode::BAD_REQUEST
+        );
+        assert_eq!(
+            send_quote_request_get_response("/api/quotes", "num=0").await.status(),
+            StatusCode::BAD_REQUEST
+        );
     }
 
     #[tokio::test]
@@ -212,7 +239,13 @@ mod tests {
     }
 
     async fn send_quote_request_get_response(uri: &str, query: &str) -> Response {
-        app()
+        let mut path = "./submodules/AvatarApi/Quotes.csv";
+        let args: Vec<String> = env::args().collect();
+
+        if args.len() == 2 {
+            path = &args[1];
+        }
+        app(path)
             .await
             .oneshot(
                 Request::builder()
@@ -231,7 +264,13 @@ mod tests {
     }
 
     async fn send_column_request_get_body(uri: &str) -> handlers::ColumnResult {
-        let response = app()
+        let mut path = "./submodules/AvatarApi/Quotes.csv";
+        let args: Vec<String> = env::args().collect();
+
+        if args.len() == 2 {
+            path = &args[1];
+        }
+        let response = app(&path)
             .await
             .oneshot(Request::builder().uri(uri).body(Body::empty()).unwrap())
             .await
