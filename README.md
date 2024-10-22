@@ -149,22 +149,16 @@ AvatarAPI is relatively easy to self-host. The only requirements are [Docker](ht
 #### ❖ Clone repo with submodules and cd into it 
 
 ```
-$ git clone --recurse-submodules https://github.com/dotzenith/AvatarAPI.rs.git
-$ cd AvatarAPI
+git clone --recurse-submodules https://github.com/dotzenith/AvatarAPI.rs.git
+cd AvatarAPI
 ```
 
 <b></b>
 
-#### ❖ Build docker image
-
-```
-$ docker build -t avatarapi:latest .
-```
-
 #### ❖ Run the container
 
 ```
-$ docker compose up -d
+docker compose up --build -d
 ```
 
 #### ❖ Set up a reverse proxy
@@ -175,24 +169,12 @@ After the step above, set up a reverse proxy using a webserver of your choice an
 
 ### ❖ Development
 
-Aside from the rust toolchain, `sqlite` is a required dependency for Development
-
-#### 1. Ensure that the repo is clones with the submodule
+#### 1. Ensure that the repo is cloned with the submodule
 ```
 git clone --recurse-submodules git@github.com:dotzenith/AvatarAPI.rs
 ```
 
-#### 2. Create a sqlite DB
-```
-./sqlite/setup.sh
-```
-
-#### 3. Set the environment variable so sqlx can find it
-```
-export DATABASE_URL="sqlite://quotes.db"
-```
-
-#### 4. Run development build
+#### 2. Run development build
 ```
 cargo run
 ```
