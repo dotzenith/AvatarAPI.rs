@@ -1,5 +1,5 @@
 # Build
-FROM docker.io/library/rust:1.79.0-bullseye as builder
+FROM docker.io/library/rust:1.82.0-bullseye as builder
 
 WORKDIR /app
 ADD . /app
