@@ -183,7 +183,7 @@ cargo run
 
 ### ❖ What's New?
 
-0.4.0 - Use in-memory sqlite
+0.4.1 - Fix using in-memory sqlite
 
 ---
 

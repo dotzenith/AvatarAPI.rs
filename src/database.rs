@@ -1,7 +1,7 @@
 use anyhow::Result;
 use csv::ReaderBuilder;
 use serde::{Deserialize, Serialize};
-use sqlx::sqlite::SqlitePool;
+use sqlx::sqlite::{SqlitePoolOptions, SqlitePool};
 use sqlx::Row;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -30,7 +30,11 @@ pub enum Column {
 
 impl Database {
     pub async fn new(path: &str) -> Result<Self> {
-        let pool = SqlitePool::connect("sqlite::memory:").await?;
+        let pool = SqlitePoolOptions::new()
+            .max_lifetime(None)
+            .idle_timeout(None)
+            .connect("sqlite::memory:")
+            .await?;
         let mut rdr = ReaderBuilder::new().delimiter(b'|').from_path(path)?;
         sqlx::query(
             r#"CREATE TABLE quotes(
