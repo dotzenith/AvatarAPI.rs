@@ -2,13 +2,16 @@ mod database;
 mod handlers;
 
 use axum::{routing::get, Router};
+use http::Method;
 use std::env;
+use tower_http::cors::{Any, CorsLayer};
 use tower_http::trace::{self, TraceLayer};
 use tracing::Level;
 
 #[tokio::main]
 async fn main() {
     let mut path = "./submodules/AvatarApi/Quotes.csv";
+    let addr = "0.0.0.0:3000";
     let args: Vec<String> = env::args().collect();
 
     if args.len() == 2 {
@@ -17,16 +20,18 @@ async fn main() {
 
     tracing_subscriber::fmt().with_target(false).compact().init();
 
-    let addr = "0.0.0.0:3000";
+    let app = app(path).await;
+    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     tracing::info!("Started listening on: {}", addr);
-    axum::Server::bind(&addr.parse().unwrap())
-        .serve(app(path).await.into_make_service())
-        .await
-        .unwrap();
+    axum::serve(listener, app).await.unwrap();
 }
 
 async fn app(csv_path: &str) -> Router {
     let db = database::Database::new(csv_path).await.unwrap();
+    let cors = CorsLayer::new()
+        .allow_methods([Method::GET])
+        .allow_origin(Any)
+        .allow_headers(Any);
     Router::new()
         // Quotes
         .route("/api/quotes", get(handlers::random))
@@ -46,11 +51,14 @@ async fn app(csv_path: &str) -> Router {
                 .make_span_with(trace::DefaultMakeSpan::new().level(Level::INFO))
                 .on_response(trace::DefaultOnResponse::new().level(Level::INFO)),
         )
+        .layer(cors)
         .with_state(db)
 }
 
 #[cfg(test)]
 mod tests {
+    use std::usize;
+
     use super::*;
     use axum::response::Response;
     use axum::{
@@ -258,7 +266,7 @@ mod tests {
     }
 
     async fn get_quote_request_body(response: Response) -> handlers::QuoteResult {
-        let body = hyper::body::to_bytes(response.into_body()).await.unwrap();
+        let body = axum::body::to_bytes(response.into_body(), usize::MAX).await.unwrap();
         let body: handlers::QuoteResult = serde_json::from_slice(&body).unwrap();
         body
     }
@@ -275,7 +283,7 @@ mod tests {
             .oneshot(Request::builder().uri(uri).body(Body::empty()).unwrap())
             .await
             .unwrap();
-        let body = hyper::body::to_bytes(response.into_body()).await.unwrap();
+        let body = axum::body::to_bytes(response.into_body(), usize::MAX).await.unwrap();
         let body: handlers::ColumnResult = serde_json::from_slice(&body).unwrap();
         body
     }
