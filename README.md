@@ -183,7 +183,7 @@ cargo run
 
 ### ❖ What's New?
 
-0.4.2 - Fix CORS
+0.4.3 - Update Rust edition
 
 ---
 
