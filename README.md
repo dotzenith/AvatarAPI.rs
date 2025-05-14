@@ -22,7 +22,7 @@
 
 AvatarAPI, is a free API serving quotes from Avatar: The Last Airbender. The quotes are sourced from [AvatarQuotes](https://github.com/dotzenith/AvatarQuotes/) and the endpoints are available at https://avatarquotes.xyz/api/{endpoint} (See [Usage](#Usage) for the different endpoints)
 
-<img src="https://github.com/dotzenith/dotzenith/blob/main/assets/AvatarAPI/AvatarAPI.png" alt="API response example">
+<img src="https://assets.danshu.co/AvatarAPI/AvatarAPI.png" alt="API response example">
 
 ---
 
