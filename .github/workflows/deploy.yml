@@ -19,7 +19,7 @@ jobs:
         port: 2222
         command_timeout: 30m
         script: |
-          cd ~/web/AvatarAPI.rs
+          cd /srv/web/AvatarAPI.rs
           git pull origin main
           docker compose down
           docker compose up --build -d
