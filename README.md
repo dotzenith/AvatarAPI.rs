@@ -1,28 +1,13 @@
 <h2 align="center"> ━━━━━━  ❖  ━━━━━━ </h2>
 
-<!-- BADGES -->
-<div align="center">
-   <p></p>
-   
-   <img src="https://img.shields.io/github/stars/dotzenith/AvatarAPI.rs?color=F8BD96&labelColor=302D41&style=for-the-badge">   
+### ❖ Warning
 
-   <img src="https://img.shields.io/github/forks/dotzenith/AvatarAPI.rs?color=DDB6F2&labelColor=302D41&style=for-the-badge">   
-
-   <img src="https://img.shields.io/github/actions/workflow/status/dotzenith/AvatarAPI.rs/deploy.yml?branch=main&color=89b4fa&labelColor=302D41&style=for-the-badge&label=Deployment"/>
-   
-   <img src="https://img.shields.io/github/actions/workflow/status/dotzenith/AvatarAPI.rs/test.yml?branch=main&color=ABE9B3&labelColor=302D41&style=for-the-badge&label=Tests"/>
-   <br>
-</div>
-
-<p/>
-
----
+AvatarAPI is no longer maintained, and I am no longer hosting it. I don't have ownership over the domain either.
+The repo will stay up as a public archive in case someone wants to host it for themselves.
 
 ### ❖ Information 
 
 AvatarAPI, is a free API serving quotes from Avatar: The Last Airbender. The quotes are sourced from [AvatarQuotes](https://github.com/dotzenith/AvatarQuotes/) and the endpoints are available at https://avatarquotes.xyz/api/{endpoint} (See [Usage](#Usage) for the different endpoints)
-
-<img src="https://assets.danshu.co/AvatarAPI/AvatarAPI.png" alt="API response example">
 
 ---
 
